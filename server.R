@@ -21,7 +21,12 @@ shinyServer(function(input, output) {
     
     data0w <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM")
     
-    dataw <- select(data0w,dateRep,cases,deaths,countriesAndTerritories)
+
+    dataw <- data0w %>%
+      rename(cases = cases_weekly,
+             deaths = deaths_weekly) %>%
+      select(dateRep, cases, deaths, countriesAndTerritories)
+
     dataw$dateRep <- as.Date(dataw$dateRep,"%d/%m/%Y")
     
     dataw <- group_by(dataw,dateRep,countriesAndTerritories)

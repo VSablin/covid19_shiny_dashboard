@@ -42,7 +42,8 @@ shinyUI(fluidPage(
                                  selectInput("scaleww",
                                              "Scale:",
                                              choices = c("log", "linear"),
-                                             selected = "log")),
+                                             selected = "log"),
+                                 h5("Note: The time scale of the plot is weekly")),
                         tabPanel("Country time series",
                                  h3("Time series of cases and deaths for a country"),
                                  plotOutput("covidPlot"),
@@ -61,7 +62,8 @@ shinyUI(fluidPage(
                                  selectInput("scalec",
                                              "Scale:",
                                              choices = c("log", "linear"),
-                                             selected = "log")
+                                             selected = "log"),
+                                 h5("Note: The time scale of the plot is weekly")
                                  ),
                         tabPanel("Worldwide rankings",
                                  h3("Worldwide ranking"),
