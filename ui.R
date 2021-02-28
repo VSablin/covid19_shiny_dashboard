@@ -9,6 +9,12 @@
 
 library(shiny)
 
+data0w <- read.csv("https://opendata.ecdc.europa.eu/covid19/nationalcasedeath/csv",
+                   na.strings = "",
+                   fileEncoding = "UTF-8-BOM",
+                   stringsAsFactors = FALSE)
+str_country <- sort(unique(data0w$country))
+
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
 
@@ -50,14 +56,15 @@ shinyUI(fluidPage(
                                  h4("Choose here one country:"),
                                  selectInput("country",
                                              "Country:",
-                                             choices = sort(c("Spain", "France", "United_States_of_America",
-                                                              "Germany", "United_Kingdom","Belgium",
-                                                              "Italy", "India", "Brazil", "Mexico", "Netherlands",
-                                                              "Sweden", "Russia", "Argentina", "Chile", "Ecuador",
-                                                              "Peru", "Colombia", "Cuba", "Venezuela", "South_Africa",
-                                                              "Iran", "Turkey", "Pakistan", "Japan", "South_Korea",
-                                                              "Australia", "New_Zealand", "Portugal", "Canada", "Egypt",
-                                                              "China", "Indonesia", "Iraq", "Pakistan"))),
+                                             choices = str_country),
+                                             # choices = sort(c("Spain", "France", "United_States_of_America",
+                                             #                  "Germany", "United_Kingdom","Belgium",
+                                             #                  "Italy", "India", "Brazil", "Mexico", "Netherlands",
+                                             #                  "Sweden", "Russia", "Argentina", "Chile", "Ecuador",
+                                             #                  "Peru", "Colombia", "Cuba", "Venezuela", "South_Africa",
+                                             #                  "Iran", "Turkey", "Pakistan", "Japan", "South_Korea",
+                                             #                  "Australia", "New_Zealand", "Portugal", "Canada", "Egypt",
+                                             #                  "China", "Indonesia", "Iraq", "Pakistan"))),
                                  h4("Choose here the scale you want (logarithmic or linear):"),
                                  selectInput("scalec",
                                              "Scale:",
