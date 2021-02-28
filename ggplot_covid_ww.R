@@ -1,18 +1,18 @@
-ggplot_covid_ww <- function(df,y_label,var_y,country,scale = "log"){
-  if (country == "WW") {
+ggplot_covid_ww <- function(df,y_label,var_y,str_country,scale = "log"){
+  if (str_country == "WW") {
     df_filtered <- df
   } else {
-    df_filtered <- filter(df,countriesAndTerritories == country)
+    df_filtered <- dplyr::filter(df,country == str_country)
   }
-  # if (scale == "log") {
-  bs <- c(1, 10, 100, 1000, 10000, 100000, 1000000, 10000000)
-  # } else if (scale == "identity") {
-  #  bs <- seq(0, 100000, 500)
-  # }
-  p <- ggplot(df_filtered,aes(x = dateRep, y = 1+{{var_y}})) +
+  p <- ggplot(df_filtered,aes(x = year_week, y = 1+{{var_y}})) +
     geom_line() +
-    scale_y_continuous(trans = scale, breaks = bs, labels = bs) +
-    xlim(min(df_filtered$dateRep),max(df_filtered$dateRep)) +
-    labs(y = y_label, x = "Date")
-    return(p)
+    # xlim(min(df_filtered$year_week),max(df_filtered$year_week)) +
+    labs(y = y_label, x = "Date") +
+    theme_bw()
+  if (scale == "log") {
+    bs <- c(1, 10, 100, 1000, 10000, 100000, 1000000, 10000000)
+    p <- p +
+      scale_y_continuous(trans = "log", breaks = bs, labels = bs)
+  }
+  return(p)
 }

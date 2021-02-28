@@ -30,7 +30,7 @@ shinyUI(fluidPage(
             #             selected = "rate"
             # )
             h3("Dashboard with information about covid19."),
-            h3("We download the data from https://opendata.ecdc.europa.eu/covid19/"),
+            h3("We download the data from https://opendata.ecdc.europa.eu/covid19/nationalcasedeath/"),
         ),
 
         mainPanel(

@@ -13,25 +13,32 @@ library(dplyr)
 library(ggplot2)
 library(utils)
 library(ggpubr)
+library(tsibble)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
     source('ggplot_covid_ww.R')
     source('plots_country.R')
-    
-    data0w <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM")
-    
+    source("get_names.R")
+  
+    data0w <- read.csv("https://opendata.ecdc.europa.eu/covid19/nationalcasedeath/csv",
+    na.strings = "",
+    fileEncoding = "UTF-8-BOM",
+    stringsAsFactors = FALSE)
 
+    if (!identical(get_names(), names(data0w))) {
+      stop("The names of the data frame are ", names(data0w), "whereas they were supposed to be", get_names(), "Stop.")
+    }
+    
     dataw <- data0w %>%
-      rename(cases = cases_weekly,
-             deaths = deaths_weekly) %>%
-      select(dateRep, cases, deaths, countriesAndTerritories)
-
-    dataw$dateRep <- as.Date(dataw$dateRep,"%d/%m/%Y")
-    
-    dataw <- group_by(dataw,dateRep,countriesAndTerritories)
-    
-    dataw <- summarise(dataw,cases = sum(cases,na.rm = T), deaths = sum(deaths,na.rm = T))
+      select(year_week,
+             indicator,
+             weekly_count,
+             cumulative_count,
+             country) %>%
+      mutate(year_week = yearweek(gsub(pattern = "-",
+                                       replacement = " W",
+                                       x = year_week)))
     
     output$covidPlot <- renderPlot({
         # generate plots_country
@@ -43,33 +50,71 @@ shinyServer(function(input, output) {
         plots_country(dataw, input$country, scale = scale)
     })
     
-    data_int <- group_by(dataw,countriesAndTerritories) %>%
-        summarise(cases = sum(cases,na.rm = T), deaths = sum(deaths,na.rm = T))
+    data_int <- dataw %>%
+      select(year_week,
+             indicator,
+             weekly_count,
+             country) %>%
+      filter(indicator == "cases") %>%
+      select(-indicator) %>%
+      rename(cases = weekly_count)
+
+    data_int$deaths <-
+      filter(dataw, indicator == "deaths")$weekly_count
     
-    data_int <- mutate(data_int,rate = deaths/cases)
+    data_int <- group_by(data_int, country) %>%
+      summarise(cases = sum(cases, na.rm = TRUE),
+                deaths = sum(deaths, na.rm = TRUE))
     
-    data_int <- filter(data_int,deaths >  mean(data_int$deaths))
+    data_int <- data_int %>%
+      filter(!(country %in% c("Africa (total)",
+                              "America (total)",
+                              "Europe (total)",
+                              "EU/EEA (total)",
+                              "Asia (total)")))
+    
+    data_int <- mutate(data_int, rate = deaths/cases)
+    
+    data_int <- filter(data_int, deaths >  mean(data_int$deaths))
     
     data_int <- data_int[order(data_int$cases),]
     
-    pc_int <- ggplot(data = data_int, aes(x=factor(countriesAndTerritories,levels = countriesAndTerritories), y = cases)) +
-        geom_bar(stat = "identity") +
-        theme(axis.text.x = element_text(angle = 90,hjust = 1,vjust = 0.5)) + 
-        xlab("Country")
+    pc_int <- ggplot(data = data_int,
+                     aes(x = factor(country,
+                                 levels = country),
+                         y = cases)) +
+      geom_bar(stat = "identity") +
+      theme(axis.text.x = element_text(angle = 90,
+                                       hjust = 1,
+                                       vjust = 0.5),
+            panel.background = element_rect(fill = "white", colour = "grey50")) +
+      xlab("Country") +
+      ylab("Cases")
     
     data_int <- data_int[order(data_int$deaths),]
     
-    pd_int <- ggplot(data=data_int, aes(x=factor(countriesAndTerritories,levels = countriesAndTerritories), y = deaths)) +
+    pd_int <- ggplot(data=data_int, aes(x = factor(country,levels = country),
+                                        y = deaths)) +
         geom_bar(stat = "identity") +
-        theme(axis.text.x = element_text(angle = 90,hjust = 1,vjust = 0.5)) + 
-        xlab("Country")
+      theme(axis.text.x = element_text(angle = 90,
+                                       hjust = 1,
+                                       vjust = 0.5),
+            panel.background = element_rect(fill = "white", colour = "grey50")) +
+      xlab("Country") +
+      ylab("Cases")
     
     data_int <- data_int[order(data_int$rate),]
     
-    prate_int <- ggplot(data = data_int, aes(x = factor(countriesAndTerritories,levels = countriesAndTerritories), y = rate)) +
-        geom_bar(stat = "identity") +
-        theme(axis.text.x = element_text(angle = 90,hjust = 1,vjust = 0.5)) + 
-        xlab("Country")
+    prate_int <- ggplot(data = data_int, aes(x = factor(country,
+                                                        levels = country),
+                                             y = rate)) +
+      geom_bar(stat = "identity") +
+      theme(axis.text.x = element_text(angle = 90,
+                                       hjust = 1,
+                                       vjust = 0.5),
+            panel.background = element_rect(fill = "white", colour = "grey50")) +
+      xlab("Country") +
+      ylab("Rate (Deaths/Cases)")
 
     output$wwPlot <- renderPlot({
 
@@ -83,7 +128,8 @@ shinyServer(function(input, output) {
         }
     })
     
-    dataall <- group_by(dataw,dateRep) %>% summarise(cases = sum(cases,na.rm = T), deaths = sum(deaths,na.rm = T))
+    dataall <- dplyr::group_by(dataw, year_week, indicator) %>%
+      summarise(weekly_count = sum(weekly_count, na.rm = TRUE))
 
     output$covidWWPlot <- renderPlot({
         if (input$scaleww == "log") {
