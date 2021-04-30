@@ -101,7 +101,7 @@ shinyServer(function(input, output) {
                                        vjust = 0.5),
             panel.background = element_rect(fill = "white", colour = "grey50")) +
       xlab("Country") +
-      ylab("Cases")
+      ylab("Deaths")
     
     data_int <- data_int[order(data_int$rate),]
     
