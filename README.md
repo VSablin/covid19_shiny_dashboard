@@ -10,3 +10,7 @@ To deploy it, you must open RStudio and log in as my personal user. Then, syncrh
 ## Data input
 
 We read the data from https://opendata.ecdc.europa.eu/covid19/
+
+## License
+
+To see the information regarding the license of the repository, go to LICENSE.
