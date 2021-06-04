@@ -1,8 +1,7 @@
 # Base image https://hub.docker.com/u/rocker/
-FROM rocker/r-base:3.6.3
+FROM rocker/r-base:4.1.0
 
 # system libraries of general use
-## install debian packages
 RUN apt-get update -qq && apt-get -y --no-install-recommends install libcurl4-openssl-dev
 
 # create /home and move there

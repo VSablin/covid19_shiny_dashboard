@@ -17,10 +17,11 @@ library(tsibble)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
-    source('ggplot_covid_ww.R')
-    source('plots_country.R')
-    source("get_names.R")
-  
+    str_funcs <- list.files("functions")
+    for (str_fun in str_funcs) {
+      source(paste0("functions/", str_fun))
+    }
+
     data0w <- read.csv("https://opendata.ecdc.europa.eu/covid19/nationalcasedeath/csv",
     na.strings = "",
     fileEncoding = "UTF-8-BOM",
