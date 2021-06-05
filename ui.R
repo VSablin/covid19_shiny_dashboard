@@ -37,6 +37,8 @@ shinyUI(fluidPage(
             # )
             h3("Dashboard with information about covid19."),
             h3("We download the data from https://opendata.ecdc.europa.eu/covid19/nationalcasedeath/"),
+            h3("The code is hosted in https://github.com/VSablin/covid19_shiny_dashboard."),
+            h3("The production version is in master.")
         ),
 
         mainPanel(
