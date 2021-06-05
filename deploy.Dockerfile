@@ -1,9 +1,8 @@
 # Base image https://hub.docker.com/u/rocker/
 FROM rocker/r-base:4.1.0
-# alternatively shiny:4.1.0
 
 # install some dependencies
-RUN apt-get update -qq && apt-get -y --no-install-recommends install libcurl4-openssl-dev
+RUN apt-get update -qq && apt-get -y --no-install-recommends install libcurl4-openssl-dev libssl-dev
 
 # create shinyusr directory and move there
 WORKDIR /home/shinyusr
