@@ -20,9 +20,46 @@ Then, open your favorite browser and go to `localhot:3838`. If everything is ok,
 ## Deployment
 
 The application is hosted in https://eduardosb89.shinyapps.io/covid_dashboard.
-To deploy it, you must open RStudio and log in as my personal user. Then, syncrhonise RStudio with shinyapps and deploy.
+To deploy it, there are several options enlisted in the following:
 
-WIP...
+### Manual deployment from RStudio
+
+Open the .Rproj file with RStudio. Then, click on publish to server (blue icon in the upper-right corner of the script window of RStudio). You must choose shinyapps and log in with my personal user (Eduardo Sánchez Burillo). The rest is straightforward.
+
+### Deployment from script
+
+Create a file called `.Renviron` in the root directory of the repository. It must have the following structure:
+```
+SHINY_ACC_NAME=
+TOKEN=
+SECRET=
+APP_NAME=
+```
+with the proper values for all the variables.
+
+Then, run the script `deploy.R`, localised in the root directory of the repository too.
+
+### Deployment from Docker
+
+This is pretty much equivalent to the previous point, since it is the same, but run in a Docker image. Make sure you have created the `.Renviron` file with the proper structure (see Deployment from script). Then, create the Docker image corresponding to `deploy.Dockerfile`:
+
+```
+docker build -t deploy_covid_dashboard -f deploy.Dockerfile .
+```
+
+Assuming everything was ok, run the image:
+
+```
+docker run --env-file .Renviron deploy_covid_dashboard
+```
+
+### Deployment with CI/CD
+
+The deployment is automatised as a workflow of GitHub. It is encoded in .github/workflows/deploy_app.yml: A configuration file to update the app.
+* It acts just if the code is pushed to master.
+* It runs on Ubuntu 20.04.
+* It builds the docker image corresponding to deploy.Dockerfile (see Deployment from Docker).
+* It executes the Docker image, reading the environment variables (see Deployment from script) encoded as GitHub secrets.
 
 ## Data input
 
