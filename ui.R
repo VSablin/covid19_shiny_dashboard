@@ -49,8 +49,8 @@ shinyUI(fluidPage(
                                  h4("Choose here the scale you want (logarithmic or linear):"),
                                  selectInput("scaleww",
                                              "Scale:",
-                                             choices = c("log", "linear"),
-                                             selected = "log"),
+                                             choices = c("linear", "log"),
+                                             selected = "linear"),
                                  h5("Note 1: The time scale of the plot is weekly."),
                                  h5("Note 2: In log scale, we represent the number of cases/deaths + 1.")),
                         tabPanel("Country time series",
@@ -71,8 +71,8 @@ shinyUI(fluidPage(
                                  h4("Choose here the scale you want (logarithmic or linear):"),
                                  selectInput("scalec",
                                              "Scale:",
-                                             choices = c("log", "linear"),
-                                             selected = "log"),
+                                             choices = c("linear", "log"),
+                                             selected = "linear"),
                                  h5("Note 1: The time scale of the plot is weekly."),
                                  h5("Note 2: In log scale, we represent the number of cases/deaths + 1.")),
                         tabPanel("Worldwide rankings",
@@ -83,7 +83,7 @@ shinyUI(fluidPage(
                                  selectInput("wwvar",
                                              "International:",
                                              choices = c("rate of mortality", "cases", "deaths"),
-                                             selected = "rate"
+                                             selected = "rate of mortality"
                                  )
                         )
             )

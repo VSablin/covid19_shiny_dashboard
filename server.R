@@ -27,7 +27,7 @@ shinyServer(function(input, output) {
     fileEncoding = "UTF-8-BOM",
     stringsAsFactors = FALSE)
 
-    if (!identical(get_names(), names(data0w))) {
+    if (!all(get_names() %in% names(data0w))) {
       stop("The names of the data frame are ", names(data0w), "whereas they were supposed to be", get_names(), "Stop.")
     }
     

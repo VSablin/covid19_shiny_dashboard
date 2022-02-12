@@ -5,9 +5,9 @@ Code to deploy my R Shiny application.
 ## Reproduce the code somewhere else
 
 1. Clone the repository.
-2. Install R (this has been tested with versions 3.6.2, 3.6.3, and 4.1.0).
+2. Install R (this has been tested with versions 3.6.2, 3.6.3, and 4.1.2).
 3. Launch a fresh R session into the repository root directory.
-4. Run `renv::restore()`.
+4. Run `renv::restore()` (we guarantee this to work for R 4.1.2; otherwise, probably you will have to remove the file renv.lock and run `install.packages(renv)` and `renv::init()`).
 
 Now you should be able to run the app. To make sure that everything is ok, run:
 
