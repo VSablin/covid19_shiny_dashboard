@@ -8,5 +8,6 @@ get_names <- function() {
              "year_week",
              "rate_14_day",
              "cumulative_count",
-             "source"))
+             "source",
+             "note"))
 }
